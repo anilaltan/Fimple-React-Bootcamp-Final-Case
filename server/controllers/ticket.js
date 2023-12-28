@@ -7,7 +7,32 @@ const {
 
 const createTicket = async (req, res) => {
   try {
-    const ticket = new Ticket(req.body);
+    const urls = [];
+    const files = req.files;
+    // console.log(files);
+    for (const file of files) {
+      const { path } = file;
+      console.log(path);
+      const imageData = await uploadToCloudinary(path, "ticket-images");
+      urls.push(imageData);
+    }
+
+    const ticketData = {
+      // other ticket properties from req.body
+      name: req.body.name,
+      surname: req.body.surname,
+      age: req.body.age,
+      TC: req.body.TC,
+      basvuruNedeni: req.body.basvuruNedeni,
+      address: req.body.address,
+      // photos: [{ imageUrl: imageData.url, publicId: imageData.public_id }],
+      photos: urls.map((imageData) => ({
+        imageUrl: imageData.url,
+        publicId: imageData.public_id,
+      })),
+    };
+
+    const ticket = new Ticket(ticketData);
     await ticket.save();
     res.status(201).send(ticket);
   } catch (error) {

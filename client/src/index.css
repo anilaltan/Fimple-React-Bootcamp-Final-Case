@@ -66,3 +66,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+nav a.active {
+  background-color: green;
+  color: #fff;
+  padding: 5px;
+}
