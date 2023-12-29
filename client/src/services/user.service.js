@@ -11,11 +11,11 @@ const getTicketByTicketNo = (ticketNo) => {
   return axios.get(`${import.meta.env.VITE_API_BASE_URL}/basvuru/${ticketNo}`);
 };
 
-const getUserBoard = () => {
-  return axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
-    headers: authHeader(),
-  });
-};
+// const getUserBoard = () => {
+//   return axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
+//     headers: authHeader(),
+//   });
+// };
 
 const postNewTicket = (data) => {
   return axios.post(
@@ -31,7 +31,7 @@ const postNewTicket = (data) => {
 
 const UserService = {
   getPublicContent,
-  getUserBoard,
+  // getUserBoard,
   postNewTicket,
   getTicketByTicketNo,
 };

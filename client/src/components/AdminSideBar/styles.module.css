@@ -1,0 +1,38 @@
+.sideBar {
+  display: flex;
+  flex-direction: column;
+  background: #f9f4ef;
+}
+
+.sideBar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sideBar li {
+  list-style: none;
+  margin: 20px 0;
+}
+
+.sideBar li a {
+  color: #020826;
+  text-decoration: none;
+}
+
+.sideBar a:hover {
+  color: #8c7851;
+}
+
+.sideBar li a.active {
+  background-color: #8c7851;
+  color: #fffffe;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.logoutBtn {
+  background: #f25042;
+  color: #fffffe;
+  border-radius: 12px;
+  padding: 10px;
+}

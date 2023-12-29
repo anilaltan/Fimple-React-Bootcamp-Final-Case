@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 900px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.success {
+  color: #88b04b;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.contentContainer {
+  display: flex;
+  justify-content: space-between;
+  max-width: 700px;
+  /* padding: 0 40px; */
+  margin: 5px auto;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #020826;
+}
+
+.inlineContainer {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.header {
+  color: #020826;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+  /*margin-bottom: 10px; */
+}
+
+.infoText {
+  color: #716040;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-size: 20px;
+  margin: 0;
+}
+.text {
+  color: #404f5e;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-size: 20px;
+  margin: 0;
+}
+
+.checkMarkContainer {
+  border-radius: 200px;
+  height: 200px;
+  width: 200px;
+  background: #f9f4ef;
+  margin: 0 auto;
+}
+
+.checkMark {
+  color: #9abc66;
+  font-size: 100px;
+  line-height: 200px;
+  margin-left: -15px;
+}
+.card {
+  /* background: #f9f4ef; */
+  padding: 60px 0;
+  border-radius: 4px;
+  /* box-shadow: 0 2px 3px #c8d0d8; */
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.infoCard {
+  background: #eaddcf;
+  padding: 60px;
+  border-radius: 4px;
+  box-shadow: 0 2px 3px #c8d0d8;
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.link {
+  font-size: 20px;
+  color: #020826;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link:hover {
+  color: #8c7851;
+}

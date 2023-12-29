@@ -1,42 +1,60 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import styles from "./styles.module.css";
 
-const Header = () => {
+const Header = ({ isAuth }) => {
   return (
-    <div className="App">
+    <header className={styles.headerContainer}>
+      <h1 className={styles.logo}>
+        <span>Başvuru Yönetim Sistemi</span>
+      </h1>
       <nav>
-        <NavLink
-          to="/basvuru-olustur"
-          end
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Home
-        </NavLink>
-        <NavLink
-          to="/admin"
-          end
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Admin
-        </NavLink>
-        <NavLink
-          to="/adminProfile"
-          end
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Admin Profile
-        </NavLink>
-        <NavLink
-          to="/admin/basvuru-listesi"
-          end
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Admin basvuru listesi
-        </NavLink>
+        <ul>
+          <li>
+            <NavLink
+              to="/basvuru-olustur"
+              className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+            >
+              Yeni Başvuru Oluştur
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/basvuru-sorgula"
+              className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+            >
+              Başvuru Sorgula
+            </NavLink>
+          </li>
+
+          {!isAuth && (
+            <li>
+              <NavLink
+                to="/admin"
+                end
+                className={({ isActive }) =>
+                  isActive ? `${styles.active}` : ""
+                }
+              >
+                Admin Girişi
+              </NavLink>
+            </li>
+          )}
+
+          {isAuth && (
+            <li>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive ? `${styles.active}` : ""
+                }
+              >
+                Admin Sayfası
+              </NavLink>
+            </li>
+          )}
+        </ul>
       </nav>
-      <main>
-        <Outlet />
-      </main>
-    </div>
+    </header>
   );
 };
 

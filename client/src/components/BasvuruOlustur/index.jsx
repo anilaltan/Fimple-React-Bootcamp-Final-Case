@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
-import UserService from "../../../services/user.service";
+import UserService from "../../services/user.service";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./styles.module.css";
 
 const BasvuruOlustur = () => {
   const navigate = useNavigate();
@@ -27,8 +28,11 @@ const BasvuruOlustur = () => {
       const newTicket = await UserService.postNewTicket(formData);
       if (newTicket) {
         setTicket(newTicket.data);
-        const ticketNo = ticket._id;
-        navigate("/basvuru-basarili", { state: { ticketNo: ticketNo } });
+        console.log(ticket);
+        const basvuruNo = newTicket.data._id;
+        navigate("/basvuru-basarili", {
+          state: { basvuruNo: basvuruNo, ticket: newTicket.data },
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -37,45 +41,76 @@ const BasvuruOlustur = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="name">name</label>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
+        <label htmlFor="name" className={styles.label}>
+          name
+        </label>
         <input
           type="text"
           id="name"
           {...register("name", { required: true })}
+          className={styles.input}
         />
-        <label htmlFor="surname">surname</label>
+        <label htmlFor="surname" className={styles.label}>
+          surname
+        </label>
         <input
           type="text"
           id="surname"
           {...register("surname", { required: true })}
+          className={styles.input}
         />
-        <label htmlFor="age">age</label>
-        <input type="text" id="age" {...register("age", { required: true })} />
-        <label htmlFor="TC">TC</label>
-        <input type="text" id="TC" {...register("TC", { required: true })} />
-        <label htmlFor="basvuruNedeni">description</label>
+        <label htmlFor="age" className={styles.label}>
+          age
+        </label>
+        <input
+          type="text"
+          id="age"
+          {...register("age", { required: true })}
+          className={styles.input}
+        />
+        <label htmlFor="TC" className={styles.label}>
+          TC
+        </label>
+        <input
+          type="text"
+          id="TC"
+          {...register("TC", { required: true })}
+          className={styles.input}
+        />
+        <label htmlFor="basvuruNedeni" className={styles.label}>
+          description
+        </label>
         <input
           type="text"
           id="basvuruNedeni"
           {...register("basvuruNedeni", { required: true })}
+          className={styles.input}
         />
-        <label htmlFor="address">address</label>
+        <label htmlFor="address" className={styles.label}>
+          address
+        </label>
         <input
           type="text"
           id="address"
           {...register("address", { required: true })}
+          className={styles.input}
         />
-        <label htmlFor="ticketImages">photos</label>
+        <label htmlFor="ticketImages" className={styles.label}>
+          photos
+        </label>
         <input
           type="file"
           id="ticketImages"
           {...register("ticketImages")}
           multiple
+          className={styles.input}
         />
 
         {/* errors will return when field validation fails  */}
-        {errors.exampleRequired && <span>This field is required</span>}
+        {errors.exampleRequired && (
+          <span className={styles.span}>This field is required</span>
+        )}
         <input type="submit" />
       </form>
     </div>

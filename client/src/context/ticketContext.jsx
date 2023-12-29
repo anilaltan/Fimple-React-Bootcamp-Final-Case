@@ -1,29 +1,30 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import UserService from "../../services/user.service";
+import UserService from "../services/user.service";
 
 const TicketsContext = createContext();
 
 export const TicketsProvider = ({ children }) => {
   const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      const res = await UserService.getPublicContent();
+      setTickets(res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getTickets = async () => {
-      try {
-        const res = await UserService.getPublicContent();
-        setTickets(res.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getTickets();
+    fetchTickets();
   }, []);
 
-  const values = { tickets, setTickets, loading };
+  const values = { tickets, loading };
 
   return (
     <TicketsContext.Provider value={values}>{children}</TicketsContext.Provider>
@@ -31,7 +32,7 @@ export const TicketsProvider = ({ children }) => {
 };
 
 TicketsProvider.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export const useTickets = () => useContext(TicketsContext);

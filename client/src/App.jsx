@@ -1,57 +1,60 @@
-import "./App.css";
-import { useState } from "react";
-import AuthService from "../services/auth.service";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+// import "./App.css";
 
-function App() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user-token"));
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-  const onSubmit = async ({ username, password }) => {
-    try {
-      setLoading(true);
-      await AuthService.login(username, password);
-      navigate("/adminProfile");
-    } catch (error) {
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+import { useUser } from "./context/userContext";
+
+import NoMatch from "./components/NoMatch";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import BasvuruOlustur from "./components/BasvuruOlustur";
+import BasvuruBasarili from "./components/BasvuruBasarili";
+import BasvuruSorgula from "./components/BasvuruSorgula";
+import Basvuru from "./components/Basvuru";
+import AdminLogin from "./components/AdminLogin";
+import Header from "./components/Header";
+import AdminPage from "./components/AdminPage";
+
+const AppLayout = () => {
+  const { token } = useUser();
+
   return (
     <>
-      {loading && <div>Loading...</div>}
-      {!loading && !user && (
-        <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* register your input into the hook by invoking the "register" function */}
-            <input
-              placeholder="username"
-              {...register("username", { required: true })}
-            />
+      <Header isAuth={token} />
 
-            {/* include validation with required or other standard HTML validation rules */}
-            <input
-              placeholder="password"
-              type="password"
-              {...register("password", { required: true })}
-            />
-            {/* errors will return when field validation fails  */}
-            {errors.exampleRequired && <span>This field is required</span>}
+      <Routes>
+        <Route path="/" element={<Navigate to="/basvuru-olustur" replace />} />
+        <Route path="/basvuru-olustur" element={<BasvuruOlustur />} />
+        <Route path="/basvuru-basarili" element={<BasvuruBasarili />} />
+        <Route path="/basvuru-sorgula" element={<BasvuruSorgula />} />
+        <Route path="/basvuru/:basvuruNo" element={<Basvuru />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute isAuth={token}>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
 
-            <input type="submit" />
-          </form>
-        </div>
-      )}
+        <Route path="*" element={<NoMatch />} />
+      </Routes>
     </>
   );
-}
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AppLayout />
+    </Router>
+  );
+};
 
 export default App;
