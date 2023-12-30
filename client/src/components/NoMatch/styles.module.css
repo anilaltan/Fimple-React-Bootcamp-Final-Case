@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 900px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.card {
+  padding: 60px 0;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.notFoundContainer {
+  border-radius: 200px;
+  height: 200px;
+  width: 200px;
+  background: #f9f4ef;
+  margin: 0 auto;
+}
+
+.notFound {
+  color: #f25042;
+  font-size: 100px;
+  line-height: 200px;
+  margin-left: -15px;
+}
+
+.text {
+  color: #404f5e;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-size: 20px;
+  margin: 0;
+}
+
+.failed {
+  color: #f25042;
+  font-family: "roboto", "Helvetica Neue", sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  margin-bottom: 10px;
+}

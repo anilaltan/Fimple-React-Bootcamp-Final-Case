@@ -2,6 +2,12 @@
   display: flex;
   flex-direction: column;
   background: #f9f4ef;
+
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: -1;
+  overflow: auto;
 }
 
 .sideBar nav {
@@ -9,9 +15,13 @@
   flex-direction: column;
 }
 
+.sideBar nav ul {
+  padding-left: 10px;
+}
+
 .sideBar li {
   list-style: none;
-  margin: 20px 0;
+  margin: 40px 0;
 }
 
 .sideBar li a {
@@ -30,7 +40,13 @@
   padding: 10px;
 }
 
+.logoutBtnContainer {
+  margin: auto 0;
+  padding-left: 10px;
+}
 .logoutBtn {
+  position: absolute;
+  bottom: 120px;
   background: #f25042;
   color: #fffffe;
   border-radius: 12px;

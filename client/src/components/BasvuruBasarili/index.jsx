@@ -1,54 +1,23 @@
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { useState } from "react";
 import styles from "./styles.module.css";
 import { BsCopy } from "react-icons/bs";
 import { CiSquareCheck } from "react-icons/ci";
+import NoMatch from "../NoMatch";
 
 const BasvuruBasarili = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [countdown, setCountdown] = useState(3);
   const [isCopy, setIsCopy] = useState(false);
   const { state } = location;
-
-  useEffect(() => {
-    if (!state) {
-      const timeoutId = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-
-      if (countdown === 0) {
-        clearInterval(timeoutId);
-        navigate("/basvuru-olustur");
-      }
-
-      return () => clearInterval(timeoutId);
-    }
-  }, [countdown, state]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(state.basvuruNo);
     setIsCopy(true);
   };
+
   return (
     <>
-      {!state && (
-        <div className={styles.container}>
-          <div className={styles.card}>
-            <div className={styles.checkMarkContainer}>
-              <i className={styles.checkMark} style={{ color: "#f25042" }}>
-                404
-              </i>
-            </div>
-            <h1 className={styles.success} style={{ color: "#f25042" }}>
-              Aradığınız Sayfa Bulunamadı
-            </h1>
-            <p className={styles.text}>
-              {countdown} saniye sonra ana sayfaya yönlendirileceksiniz...
-            </p>
-          </div>
-        </div>
-      )}
+      {!state && <NoMatch />}
       {state && (
         <div className={styles.container}>
           <div className={styles.card}>
@@ -146,18 +115,30 @@ const BasvuruBasarili = () => {
               </span>
             </div>
 
-            {state.ticket.photos.length > 0
-              ? state.ticket.photos.map((photo) => (
-                  <div
-                    className={styles.contentContainer}
-                    style={{ flexDirection: "column" }}
-                    key={photo.publicId}
-                  >
-                    <span className={styles.header}>Fotoğraflar</span>
-                    <img src={photo.imageUrl} style={{ maxWidth: "100px" }} />
-                  </div>
-                ))
-              : null}
+            {state.ticket.photos.length > 0 ? (
+              <div
+                className={styles.contentContainer}
+                style={{ flexDirection: "column" }}
+              >
+                <span className={styles.header}>Fotoğraflar</span>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "10px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {state.ticket.photos.map((photo) => (
+                    <img
+                      key={photo.publicId}
+                      src={photo.imageUrl}
+                      style={{ maxWidth: "300px", marginBottom: "5px" }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       )}

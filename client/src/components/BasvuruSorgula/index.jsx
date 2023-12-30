@@ -11,29 +11,30 @@ const BasvuruSorgula = () => {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
-    // console.log(data);
     navigate(`/basvuru/${data.takipNo}`);
   };
+
+  //TODO Hatali giris yazdir ve form valid yap(yup)
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.success}>Başvuru Sorgula</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            id="takipNo"
-            className={styles.input}
-            placeholder="Takip Numarası"
-            {...register("takipNo", { required: true })}
-          />
+          <div className={styles.submitDiv}>
+            <input
+              type="text"
+              id="takipNo"
+              className={styles.input}
+              placeholder="Takip Numarası"
+              {...register("takipNo", { required: true })}
+            />
+            <FaSearch className={styles.searchIcon} />
+          </div>
 
-          <input
-            type="submit"
-            value="Sorgula"
-            className={styles.submitBtn}
-          ></input>
-          <FaSearch className={styles.searchIcon} />
+          <div className={styles.submitDiv}>
+            <input type="submit" value="Sorgula" className={styles.submitBtn} />
+          </div>
 
           {/* errors will return when field validation fails  */}
           {errors.takipNo && <div>This field is required</div>}

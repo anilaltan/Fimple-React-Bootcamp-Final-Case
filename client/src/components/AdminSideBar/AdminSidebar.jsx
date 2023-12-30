@@ -6,7 +6,6 @@ const AdminSidebar = () => {
   const { logoutUser } = useUser();
   return (
     <div className={styles.sideBar}>
-      <h2>Admin Sidebar</h2>
       <nav>
         <ul>
           <li>
@@ -19,25 +18,24 @@ const AdminSidebar = () => {
           </li>
           <li>
             <NavLink
-              to="/admin"
+              to="/admin/ad"
               end
               className={({ isActive }) => (isActive ? `${styles.active}` : "")}
             >
-              admin
+              Yeni Admin Hesabı Oluştur
             </NavLink>
-          </li>
-
-          <li>
-            <span
-              onClick={logoutUser}
-              style={{ cursor: "pointer" }}
-              className={styles.logoutBtn}
-            >
-              Logout
-            </span>
           </li>
         </ul>
       </nav>
+      <div className={styles.logoutBtnContainer}>
+        <span
+          onClick={logoutUser}
+          style={{ cursor: "pointer" }}
+          className={styles.logoutBtn}
+        >
+          Logout
+        </span>
+      </div>
     </div>
   );
 };
