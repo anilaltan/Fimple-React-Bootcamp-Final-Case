@@ -33,7 +33,7 @@ const AdminSidebar = () => {
           style={{ cursor: "pointer" }}
           className={styles.logoutBtn}
         >
-          Logout
+          Çıkış
         </span>
       </div>
     </div>
