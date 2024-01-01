@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import UserService from "../../services/user.service";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as yup from "yup";
@@ -8,14 +8,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import styles from "./styles.module.css";
 
-const isFilesLessThanThree = (fileList) => {
-  return fileList.length < 3;
-};
-
 const schema = yup.object().shape({
   name: yup.string().required("İsim zorunludur"),
   surname: yup.string().required("Soyisim zorunludur"),
-  age: yup.number().integer("Yaş tam sayı olmalı").required("Yaş zorunludur"),
+  age: yup
+    .number()
+    .typeError("Yaş tam sayı olmalı")
+    .integer("Yaş tam sayı olmalı")
+    .required("Yaş zorunludur"),
   TC: yup
     .number()
     .typeError("TC Kimlik numarası tam sayı olmalı")
@@ -30,7 +30,7 @@ const schema = yup.object().shape({
     .test(
       "is-valid-amount",
       "En fazla 2 dosya yüklenebilir",
-      (value) => value.length < 3
+      (value) => value && value.length < 3
     ),
 });
 
@@ -38,45 +38,55 @@ const BasvuruOlustur = () => {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  const [ticket, setTicket] = useState();
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const {
     register,
     handleSubmit,
     trigger,
+    getValues,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: "",
-      surname: "",
-      age: "",
-      TC: 0,
-      basvuruNedeni: "",
-      address: "",
-      ticketImages: [],
-    },
   });
 
+  useEffect(() => {
+    let defaultValues = {};
+    defaultValues.name = getValues().name ? getValues().name : null;
+    defaultValues.surname = getValues().surname ? getValues().surname : null;
+    defaultValues.age = getValues().age ? getValues().age : null;
+    defaultValues.TC = getValues().TC ? getValues().TC : null;
+    defaultValues.address = getValues().address ? getValues().address : null;
+    defaultValues.basvuruNedeni = getValues().basvuruNedeni
+      ? getValues().basvuruNedeni
+      : null;
+    reset({ ...defaultValues });
+  }, [step]);
+
   const nextStep = async () => {
-    const fieldsToValidate = {
-      1: ["name", "surname", "age"],
-      2: ["tc", "address"],
-      3: ["basvuruNedeni", "ticketImages"],
-    };
+    try {
+      const fieldsToValidate = {
+        1: ["name", "surname", "age"],
+        2: ["TC", "address"],
+        3: ["basvuruNedeni", "ticketImages"],
+      };
 
-    const result = await trigger(fieldsToValidate[step]);
-    console.log(result);
+      const result = await trigger(fieldsToValidate[step]);
 
-    if (result === true) {
-      setStep((prevStep) => prevStep + 1);
+      if (result === true) {
+        setStep((prevStep) => prevStep + 1);
+      }
+    } catch (validationErrors) {
+      console.error("Validation error:", validationErrors);
     }
   };
   const prevStep = () => setStep((prevStep) => prevStep - 1);
 
-  //TODO Hatali giris yazdir ve form valid yap(yup)
   const onSubmit = async (data) => {
     try {
+      setButtonDisabled((prev) => !prev);
+      console.log(isButtonDisabled);
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("surname", data.surname);
@@ -88,21 +98,13 @@ const BasvuruOlustur = () => {
         formData.append("ticketImages", file);
       }
 
-      // console.log(isFilesLessThanThree(data.ticketImages));
-      // console.log(formData);
-      if (step === 3) {
-        console.log("data: ", data);
+      const newTicket = await UserService.postNewTicket(formData);
+      if (newTicket) {
+        const basvuruNo = newTicket.data._id;
+        navigate("/basvuru-basarili", {
+          state: { basvuruNo: basvuruNo, ticket: newTicket.data },
+        });
       }
-
-      // const newTicket = await UserService.postNewTicket(formData);
-      // if (newTicket) {
-      //   setTicket(newTicket.data);
-      //   console.log(ticket);
-      //   const basvuruNo = newTicket.data._id;
-      //   navigate("/basvuru-basarili", {
-      //     state: { basvuruNo: basvuruNo, ticket: newTicket.data },
-      //   });
-      // }
     } catch (error) {
       console.error("Ticket create error:", error);
     }
@@ -113,107 +115,262 @@ const BasvuruOlustur = () => {
       case 1:
         return (
           <>
-            <label className={styles.label}>name</label>
-            <input
-              type="text"
-              id="name"
-              required
-              {...register("name", { required: true })}
-              className={styles.input}
-            />
-            <p>{errors && errors.name?.message}</p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                İsim
+              </label>
+              <input
+                type="text"
+                id="name"
+                placeholder="isim"
+                required
+                {...register("name", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>{errors && errors.name?.message}</p>
 
-            <label htmlFor="surname" className={styles.label}>
-              surname
-            </label>
-            <input
-              type="text"
-              id="surname"
-              {...register("surname", { required: true })}
-              className={styles.input}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="surname"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                Soyisim
+              </label>
+              <input
+                type="text"
+                id="surname"
+                placeholder="Soyisim"
+                {...register("surname", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>{errors && errors.surname?.message}</p>
 
-            <p>{errors && errors.surname?.message}</p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="age"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                Yaş
+              </label>
+              <input
+                type="number"
+                id="age"
+                placeholder="Yaş"
+                required
+                {...register("age", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>{errors && errors.age?.message}</p>
 
-            <label htmlFor="age" className={styles.label}>
-              age
-            </label>
-            <input
-              type="text"
-              id="age"
-              {...register("age", { required: true })}
-              className={styles.input}
-            />
-            <p>{errors && errors.age?.message}</p>
-
-            <button type="button" onClick={nextStep}>
-              Next
+            <button
+              type="button"
+              onClick={nextStep}
+              className={styles.submitBtn}
+            >
+              İleri
             </button>
           </>
         );
       case 2:
         return (
           <>
-            <label htmlFor="TC" className={styles.label}>
-              TC
-            </label>
-            <input
-              type="text"
-              id="TC"
-              {...register("TC", { required: true })}
-              className={styles.input}
-            />
-            <p>{errors && errors.TC?.message}</p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="TC"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                TC Numarası
+              </label>
+              <input
+                type="number"
+                id="TC"
+                placeholder="TC Numarası"
+                required
+                {...register("TC", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>{errors && errors.TC?.message}</p>
 
-            <label htmlFor="address" className={styles.label}>
-              address
-            </label>
-            <input
-              type="text"
-              id="address"
-              {...register("address", { required: true })}
-              className={styles.input}
-            />
-            <p>{errors && errors.address?.message}</p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="address"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                Adres
+              </label>
+              <input
+                type="text"
+                id="address"
+                placeholder="Adres"
+                required
+                {...register("address", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>{errors && errors.address?.message}</p>
 
-            <button type="button" onClick={prevStep}>
-              Previous
+            <button
+              type="button"
+              onClick={prevStep}
+              className={styles.submitBtn}
+            >
+              Önceki
             </button>
-            <button type="button" onClick={nextStep}>
-              Next
+            <button
+              type="button"
+              onClick={nextStep}
+              className={styles.submitBtn}
+            >
+              Sonraki
             </button>
           </>
         );
       case 3:
         return (
           <>
-            <label htmlFor="basvuruNedeni" className={styles.label}>
-              description
-            </label>
-            <input
-              type="text"
-              id="basvuruNedeni"
-              {...register("basvuruNedeni", { required: true })}
-              className={styles.input}
-            />
-            <p>{errors && errors.basvuruNedeni?.message}</p>
-
-            <label htmlFor="ticketImages" className={styles.label}>
-              photos
-            </label>
-            <input
-              type="file"
-              id="ticketImages"
-              {...register("ticketImages")}
-              multiple
-              className={styles.input}
-            />
-            <p>{errors && errors.ticketImages?.message}</p>
-
-            <button type="button" onClick={prevStep}>
-              Previous
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="basvuruNedeni"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                Başvuru Nedeni
+              </label>
+              <input
+                type="text"
+                id="basvuruNedeni"
+                placeholder="Başvuru Nedeni"
+                {...register("basvuruNedeni", { required: true })}
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>
+              {errors && errors.basvuruNedeni?.message}
+            </p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "baseline",
+              }}
+            >
+              <label
+                htmlFor="ticketImages"
+                className={styles.label}
+                style={{
+                  color: "#020826",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                }}
+              >
+                Foroğraflar
+              </label>
+              <input
+                type="file"
+                id="ticketImages"
+                placeholder="Foroğraflar"
+                {...register("ticketImages")}
+                multiple
+                className={styles.input}
+              />
+            </div>
+            <p className={styles.error}>
+              {errors && errors.ticketImages?.message}
+            </p>
+            <button
+              type="button"
+              onClick={prevStep}
+              className={styles.submitBtn}
+              disabled={isButtonDisabled}
+            >
+              Önceki
             </button>
-            <input type="submit" />
+            {/* //TODO loading ekle buton icine */}
+            <input
+              type="submit"
+              className={`${styles.submitBtn} ${
+                !isButtonDisabled ? null : styles.disabledButton
+              }`}
+              disabled={isButtonDisabled}
+            />
           </>
         );
       default:
@@ -229,99 +386,11 @@ const BasvuruOlustur = () => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles.formContainer}
         >
-          {renderFormStep()}
-
-          {/* Display errors */}
-          {/* {errors.exampleRequired && (
-            <span className={styles.span}>This field is required</span>
-          )} */}
+          <div className={styles.inputContainer}>{renderFormStep()}</div>
         </form>
       </div>
     </div>
   );
-
-  // return (
-  //   <div className={styles.container}>
-  //     <div className={styles.card}>
-  //       <h1 className={styles.success}>Yeni Başvuru Oluştur</h1>
-  //       <form
-  //         onSubmit={handleSubmit(onSubmit)}
-  //         className={styles.formContainer}
-  //       >
-  //         <label htmlFor="name" className={styles.label}>
-  //           name
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="name"
-  //           {...register("name", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="surname" className={styles.label}>
-  //           surname
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="surname"
-  //           {...register("surname", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="age" className={styles.label}>
-  //           age
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="age"
-  //           {...register("age", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="TC" className={styles.label}>
-  //           TC
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="TC"
-  //           {...register("TC", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="basvuruNedeni" className={styles.label}>
-  //           description
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="basvuruNedeni"
-  //           {...register("basvuruNedeni", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="address" className={styles.label}>
-  //           address
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="address"
-  //           {...register("address", { required: true })}
-  //           className={styles.input}
-  //         />
-  //         <label htmlFor="ticketImages" className={styles.label}>
-  //           photos
-  //         </label>
-  //         <input
-  //           type="file"
-  //           id="ticketImages"
-  //           {...register("ticketImages")}
-  //           multiple
-  //           className={styles.input}
-  //         />
-
-  //         {/* errors will return when field validation fails  */}
-  //         {errors.exampleRequired && (
-  //           <span className={styles.span}>This field is required</span>
-  //         )}
-  //         <input type="submit" />
-  //       </form>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default BasvuruOlustur;

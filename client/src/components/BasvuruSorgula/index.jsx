@@ -1,20 +1,31 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import styles from "./styles.module.css";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { FaSearch } from "react-icons/fa";
+
+import styles from "./styles.module.css";
+
+const schema = yup.object().shape({
+  takipNo: yup.string().required("Takip Numarası zorunlu"),
+});
 
 const BasvuruSorgula = () => {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const onSubmit = (data) => {
     navigate(`/basvuru/${data.takipNo}`);
   };
 
-  //TODO Hatali giris yazdir ve form valid yap(yup)
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -36,8 +47,9 @@ const BasvuruSorgula = () => {
             <input type="submit" value="Sorgula" className={styles.submitBtn} />
           </div>
 
-          {/* errors will return when field validation fails  */}
-          {errors.takipNo && <div>This field is required</div>}
+          {errors.takipNo && (
+            <p className={styles.error}>{errors.takipNo.message}</p>
+          )}
         </form>
       </div>
     </div>

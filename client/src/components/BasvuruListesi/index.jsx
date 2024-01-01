@@ -72,7 +72,7 @@ const BasvuruListesi = () => {
                 className={`${styles.col} ${styles.col3}`}
                 onClick={() => requestSort("createdAt")}
               >
-                Tarih
+                Oluşturulma Tarihi
                 {sortConfigs["createdAt"].direction === "ascending" ? "↑" : "↓"}
               </div>
               <div

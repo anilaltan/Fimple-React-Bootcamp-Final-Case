@@ -11,12 +11,6 @@ const getTicketByTicketNo = (ticketNo) => {
   return axios.get(`${import.meta.env.VITE_API_BASE_URL}/basvuru/${ticketNo}`);
 };
 
-// const getUserBoard = () => {
-//   return axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
-//     headers: authHeader(),
-//   });
-// };
-
 const postNewTicket = (data) => {
   return axios.post(
     `${import.meta.env.VITE_API_BASE_URL}/basvuru-olustur`,
@@ -29,9 +23,16 @@ const postNewTicket = (data) => {
   );
 };
 
+const updateTicket = (ticketNo, status, response) => {
+  return axios.put(`${import.meta.env.VITE_API_BASE_URL}/basvuru/${ticketNo}`, {
+    status: status,
+    response: response,
+  });
+};
+
 const UserService = {
   getPublicContent,
-  // getUserBoard,
+  updateTicket,
   postNewTicket,
   getTicketByTicketNo,
 };

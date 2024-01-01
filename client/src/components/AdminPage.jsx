@@ -4,7 +4,6 @@ import BasvuruListesi from "./BasvuruListesi";
 import EditBasvuru from "./EditBasvuru";
 import { TicketsProvider } from "../context/ticketContext";
 
-//TODO bu sayfayi klasor icerisine al
 const AdminPage = () => {
   return (
     <div>
@@ -19,8 +18,14 @@ const AdminPage = () => {
               </TicketsProvider>
             }
           />
-          <Route path="/basvuru/:basvuruNo" element={<EditBasvuru />} />
-          <Route path="/admin-olustur" element={<EditBasvuru />} />
+          <Route
+            path="/basvuru/:basvuruNo"
+            element={
+              <TicketsProvider>
+                <EditBasvuru />
+              </TicketsProvider>
+            }
+          />
         </Routes>
       </div>
     </div>

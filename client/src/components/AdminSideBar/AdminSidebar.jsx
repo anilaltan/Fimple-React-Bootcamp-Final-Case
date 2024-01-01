@@ -13,16 +13,7 @@ const AdminSidebar = () => {
               to="/admin/basvuru-listesi"
               className={({ isActive }) => (isActive ? `${styles.active}` : "")}
             >
-              basvuru-listesi
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/admin/ad"
-              end
-              className={({ isActive }) => (isActive ? `${styles.active}` : "")}
-            >
-              Yeni Admin Hesabı Oluştur
+              Başvuru Listesi
             </NavLink>
           </li>
         </ul>

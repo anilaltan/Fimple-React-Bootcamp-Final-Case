@@ -20,11 +20,34 @@ export const TicketsProvider = ({ children }) => {
     }
   };
 
+  const getTicketByTicketNo = async (basvuruNo) => {
+    try {
+      setLoading(true);
+      const ticket = await UserService.getTicketByTicketNo(basvuruNo);
+      return ticket.data;
+    } catch (error) {
+      console.error("error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateTicket = async (ticketNo, status, response) => {
+    try {
+      setLoading(true);
+      await UserService.updateTicket(ticketNo, status, response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchTickets();
   }, []);
 
-  const values = { tickets, loading };
+  const values = { tickets, loading, updateTicket, getTicketByTicketNo };
 
   return (
     <TicketsContext.Provider value={values}>{children}</TicketsContext.Provider>

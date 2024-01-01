@@ -10,11 +10,13 @@ const UserProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user-token") || null)
   );
   const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
   const loginUser = async (username, password) => {
     try {
       setLoading(true);
-      await AuthService.login(username, password);
+      const isLogin = await AuthService.login(username, password);
+      setLoginError(isLogin);
       setToken(JSON.parse(localStorage.getItem("user-token")));
     } catch (error) {
       console.error(error);
@@ -36,7 +38,7 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  const values = { token, loginUser, logoutUser, loading };
+  const values = { token, loginUser, logoutUser, loading, loginError };
 
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };

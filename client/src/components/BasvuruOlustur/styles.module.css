@@ -42,6 +42,12 @@
   padding: 8px;
   margin-bottom: 15px;
   box-sizing: border-box;
+
+  padding: 12px 25px;
+  width: 180px;
+  z-index: 0;
+  border: none;
+  border-radius: 4px;
 }
 
 .span {
@@ -50,12 +56,23 @@
   margin-top: 5px;
 }
 
-/* input[type="submit"] {
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
+.error {
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
-input[type="submit"]:hover {
-  background-color: #45a049;
-} */
+.submitBtn {
+  background-color: #8c7851;
+  color: #fffffe;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 30px;
+}
+
+.disabledButton {
+  background: red;
+}
