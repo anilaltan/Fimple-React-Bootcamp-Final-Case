@@ -31,7 +31,16 @@ const schema = yup.object().shape({
       "is-valid-amount",
       "En fazla 2 dosya yüklenebilir",
       (value) => value && value.length < 3
-    ),
+    )
+    .test("fileSize", "En fazla 1MB boyutunda dosya yüklenebilir", (value) => {
+      const maxSize = 1 * 1024 * 1024;
+      if (value && value[0]) {
+        return value[0].size < maxSize;
+      }
+      if (value && value[1]) {
+        return value[1].size < maxSize;
+      }
+    }),
 });
 
 const BasvuruOlustur = () => {
@@ -86,7 +95,6 @@ const BasvuruOlustur = () => {
   const onSubmit = async (data) => {
     try {
       setButtonDisabled((prev) => !prev);
-      console.log(isButtonDisabled);
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("surname", data.surname);
