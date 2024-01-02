@@ -12,6 +12,7 @@ const AdminSidebar = () => {
             <NavLink
               to="/admin/basvuru-listesi"
               className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+              style={{ textWrap: "nowrap" }}
             >
               Başvuru Listesi
             </NavLink>

@@ -1,36 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
-import Hamburger from "./HamburgerMenu";
-import { GiHamburgerMenu } from "react-icons/gi";
 import styles from "./styles.module.css";
-
-const Header = ({ isAuth, logoutUser }) => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
+export default function Hamburger({ isOpen, isAuth, logoutUser }) {
   return (
     <>
-      <header className={styles.headerContainer}>
-        <h1 className={styles.logo}>
-          <span>Başvuru Yönetim Sistemi</span>
-        </h1>
-
-        <div
-          className={styles.hamburger}
-          onClick={toggleMenu}
-          // style={{ display: "none" }}
-        >
-          <GiHamburgerMenu />
-          <Hamburger
-            isOpen={isMenuOpen}
-            isAuth={isAuth}
-            logoutUser={logoutUser}
-          />
-        </div>
-
-        <nav className={styles.nav}>
+      {isOpen && (
+        <nav className={styles.hamburgerNav}>
           <ul>
             <li>
               <NavLink
@@ -79,11 +53,20 @@ const Header = ({ isAuth, logoutUser }) => {
                 </NavLink>
               </li>
             )}
+            {isAuth && (
+              <li>
+                <span
+                  onClick={logoutUser}
+                  style={{ cursor: "pointer" }}
+                  className={styles.logoutBtn}
+                >
+                  Çıkış
+                </span>
+              </li>
+            )}
           </ul>
         </nav>
-      </header>
+      )}
     </>
   );
-};
-
-export default Header;
+}

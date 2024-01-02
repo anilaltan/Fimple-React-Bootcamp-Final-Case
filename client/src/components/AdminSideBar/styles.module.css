@@ -52,3 +52,9 @@
   border-radius: 12px;
   padding: 10px;
 }
+
+@media all and (max-width: 860px) {
+  .sideBar {
+    display: none;
+  }
+}

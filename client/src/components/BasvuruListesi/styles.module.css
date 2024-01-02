@@ -91,6 +91,12 @@ h2 small {
 .submitBtn:hover {
   color: #020826;
 }
+@media all and (max-width: 860px) {
+  .container {
+    width: 100%;
+  }
+}
+
 @media all and (max-width: 767px) {
   .responsiveTable .tableHeader {
     display: none;

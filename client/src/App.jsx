@@ -21,11 +21,11 @@ import Header from "./components/Header";
 import AdminPage from "./components/AdminPage";
 
 const AppLayout = () => {
-  const { token } = useUser();
+  const { token, logoutUser } = useUser();
 
   return (
     <>
-      <Header isAuth={token} />
+      <Header isAuth={token} logoutUser={logoutUser} />
 
       <Routes>
         <Route path="/" element={<Navigate to="/basvuru-olustur" replace />} />

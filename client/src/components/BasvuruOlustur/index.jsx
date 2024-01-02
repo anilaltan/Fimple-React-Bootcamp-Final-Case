@@ -363,7 +363,7 @@ const BasvuruOlustur = () => {
             >
               Önceki
             </button>
-            {/* //TODO loading ekle buton icine */}
+
             <input
               type="submit"
               className={`${styles.submitBtn} ${
